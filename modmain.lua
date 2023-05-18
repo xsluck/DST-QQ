@@ -95,9 +95,9 @@ sendGroupMsg = function(guid, userid, name, prefab, message, colour, whisper, is
         local tbl2 = {}
         tbl2.type = "Plain"
         tbl2.text = "\n\nkleiId:" .. userIdStr
-        groupDate.messageChain = { tbl1, tbl2 }
+        groupDate.messageChain = {tbl1, tbl2}
         printLog(jsonUtil.encode(groupDate));
-        GLOBAL.TheSim:QueryServer(sendGroupMessageUrl, onSendGroupMsgResult, "POST", jsonUtil.encode(groupDate))   
+        GLOBAL.TheSim:QueryServer(sendGroupMessageUrl, onSendGroupMsgResult, "POST", jsonUtil.encode(groupDate))
     end
 end
 --发送指令消息
@@ -108,7 +108,7 @@ sendApduMsg = function(message)
     local tbl1 = {}
     tbl1.type = "Plain"
     tbl1.text = message
-    groupDate.messageChain = { tbl1 }
+    groupDate.messageChain = {tbl1}
     printLog(jsonUtil.encode(groupDate));
     GLOBAL.TheSim:QueryServer(sendGroupMessageUrl, onSendGroupMsgResult, "POST", jsonUtil.encode(groupDate))
 end
@@ -187,12 +187,6 @@ function onGetGroupMsgResult(result, isSuccessful, resultCode)
                 if (GLOBAL.next(result.data) ~= nil and result.data[i].type == "GroupMessage" and result.data[i].sender.group.id == QQGroup) then
                     for j, k in GLOBAL.ipairs(result.data[i].messageChain) do
                         if (result.data[i].messageChain[j].type == "Plain") then
-                            if (isPrefix) then
-                                if (string.sub(result.data[i].messageChain[j].text, 1, 1) == ":") then
-                                    txt = string.sub(result.data[i].messageChain[j].text, 2);
-                                    GLOBAL.TheNet:SystemMessage("来自异界" .. result.data[i].sender.memberName .. "的消息：" .. txt);
-                                end
-                            end 
                             if(string.sub(result.data[i].messageChain[j].text, 1, 1) == "/") then
                                 local txt = string.sub(result.data[i].messageChain[j].text, 2);
                                 printLog("txt" .. txt)
@@ -213,7 +207,7 @@ function onGetGroupMsgResult(result, isSuccessful, resultCode)
                                     _G.ExecuteConsoleCommand(str);
                                     sendApduMsg(result.data[i].sender.memberName.."自杀已执行！");
                                 elseif(result.data[i].sender.permission == "OWNER" or result.data[i].sender.permission == "ADMINISTRATOR") then
-                                    command = string.sub(txt, 1,6);
+                                    command = string.sub(txt, 1, 6);
                                     printLog("command" .. command)
                                     if(command == "重置")then
                                         _G.ExecuteConsoleCommand("c_regenerateworld()")
@@ -243,13 +237,16 @@ function onGetGroupMsgResult(result, isSuccessful, resultCode)
                                 else
                                     sendApduMsg("只有管理员才能执行任何指令！");
                                 end
+                            elseif (isPrefix) then
+                                if (string.sub(result.data[i].messageChain[j].text, 1, 1) == ":") then
+                                    txt = string.sub(result.data[i].messageChain[j].text, 2);
+                                    GLOBAL.TheNet:SystemMessage("来自异界" .. result.data[i].sender.memberName .. "的消息：" .. txt);
+                                end
                             else
                                 txt = result.data[i].messageChain[j].text
                                 printLog("获取消息成功:" .. txt);
                                 GLOBAL.TheNet:SystemMessage("来自异界" .. result.data[i].sender.memberName .. "的消息：" .. txt);
-                                
                             end
-                        else
                         end
                     end
                 end
@@ -297,6 +294,6 @@ function getworldstate()
     if _G.TheWorld.components and _G.TheWorld.components.worldstate and _G.TheWorld.components.worldstate.data then
         worldstate.days = _G.TheWorld.components.worldstate.data.cycles
     end
-    local str = "季节："..worldstate.season.."\n温度："..string.sub(worldstate.temperature, 1, 2).."\n季节剩余天数："..worldstate.remainingdaysinseason.."\n天数："..worldstate.days
+    local str = "季节："..worldstate.season.."\n温度："..string.sub(worldstate.temperature, 1, 2) .. "\n季节剩余天数："..worldstate.remainingdaysinseason.."\n天数："..worldstate.days
     return str
 end
