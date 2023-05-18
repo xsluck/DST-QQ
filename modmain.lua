@@ -212,7 +212,7 @@ function onGetGroupMsgResult(result, isSuccessful, resultCode)
                                     local str = 'local player = UserToPlayer("' .. result.data[i].sender.memberName .. '") if (player ~= nil) then player:PushEvent("death") player.deathpkname = "因QQ死亡" end';
                                     _G.ExecuteConsoleCommand(str);
                                     sendApduMsg(result.data[i].sender.memberName.."自杀已执行！");
-                                elseif(result.data[i].sender.group.permission == "ADMINISTRATOR") then
+                                elseif(result.data[i].sender.permission == "OWNER" or result.data[i].sender.permission == "ADMINISTRATOR") then
                                     command = string.sub(txt, 1,6);
                                     printLog("command" .. command)
                                     if(command == "重置")then
